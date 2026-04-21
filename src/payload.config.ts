@@ -42,7 +42,7 @@ export default buildConfig({
           path: '/content',
         },
       },
-      header: '@/components/EmptyHeader#EmptyHeader',
+      header: ['@/components/EmptyHeader#EmptyHeader'],
     },
   },
   collections: [Users, Media, Projects, Profiles],
