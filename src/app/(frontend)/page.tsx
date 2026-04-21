@@ -24,10 +24,10 @@ export default async function HomePage() {
     >
       <div style={{ textAlign: 'center', padding: '40px' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 600, marginBottom: '8px' }}>
-          Creative Barrow CMS
+          Chris & Oscar+ CMS
         </h1>
         <p style={{ color: '#666', marginBottom: '32px', fontSize: '14px' }}>
-          {user ? `Logget ind som ${user.email}` : 'Indholdsstyring til creativebarrow.dk'}
+          {user ? `Logget ind som ${user.email}` : 'Indholdsstyring til andtheoscargoestochris.com'}
         </p>
         <a
           href={payloadConfig.routes?.admin ?? '/admin'}
