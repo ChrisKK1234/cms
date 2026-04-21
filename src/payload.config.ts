@@ -8,6 +8,9 @@ import { cloudinaryStorage } from 'payload-cloudinary'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
+import { Profiles } from './collections/Profiles'
+import { Work } from './globals/Work'
 import { muxPlugin } from './mux'
 import { dashboardStatsEndpoint } from './dashboard/dashboardStats'
 
@@ -23,7 +26,7 @@ export default buildConfig({
     meta: {
       icons: [
         {
-          url: '/tab_icon.svg', // eller '/icon.png'
+          url: '/tab_icon.svg',
           type: 'image/svg+xml',
         },
       ],
@@ -34,10 +37,16 @@ export default buildConfig({
           Component: '@/dashboard/DashboardView#DashboardView',
           path: '/',
         },
+        contentDashboard: {
+          Component: '@/dashboard/ContentDashboard#ContentDashboard',
+          path: '/content',
+        },
       },
+      header: '@/components/EmptyHeader#EmptyHeader',
     },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Projects, Profiles],
+  globals: [Work],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

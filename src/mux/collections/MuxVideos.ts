@@ -23,6 +23,10 @@ export const MuxVideosCollection = ({ slug, options }: Options): CollectionConfi
       edit: {
         SaveButton: '@/mux/plugin/components/MuxHiddenSaveButton#MuxHiddenSaveButton',
       },
+      views: {
+        list: { Component: '@/views/mux/MuxVideosListView#MuxVideosListView' },
+        edit: { default: { Component: '@/views/mux/MuxVideoEditView#MuxVideoEditView' } },
+      },
     },
   },
   fields: [

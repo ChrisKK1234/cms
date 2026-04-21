@@ -5,6 +5,20 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
+  admin: {
+    components: {
+      views: {
+        list: {
+          Component: '@/views/media/MediaListView#MediaListView',
+        },
+        edit: {
+          default: {
+            Component: '@/views/media/MediaEditView#MediaEditView',
+          },
+        },
+      },
+    },
+  },
   fields: [
     {
       name: 'alt',

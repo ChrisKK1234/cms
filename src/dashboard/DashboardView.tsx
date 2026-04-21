@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Stats = {
   mux: {
@@ -40,7 +41,35 @@ type Stats = {
 
 const RAILWAY_CREDIT_CAP = 5
 
+const SHORTCUTS = [
+  { label: 'Content', sub: 'Pages, projekter og profiler', href: '/admin/content' },
+  { label: 'Media', sub: 'Billeder og filer via Cloudinary', href: '/admin/collections/media' },
+  { label: 'Video', sub: 'Videoer via Mux', href: '/admin/collections/mux-videos' },
+]
+
+function Shortcut({ label, sub, onClick }: { label: string; sub: string; onClick: () => void }) {
+  const [hovered, setHovered] = React.useState(false)
+  return (
+    <div
+      style={{
+        ...s.shortcut,
+        background: hovered ? 'var(--theme-elevation-100)' : 'var(--theme-elevation-50)',
+      }}
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div style={s.shortcutLeft}>
+        <span style={s.shortcutLabel}>{label}</span>
+        <span style={s.shortcutSub}>{sub}</span>
+      </div>
+      <span style={s.shortcutArrow}>{'→'}</span>
+    </div>
+  )
+}
+
 export function DashboardView() {
+  const router = useRouter()
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -57,15 +86,6 @@ export function DashboardView() {
         setLoading(false)
       })
   }, [])
-
-  function formatDuration(seconds: number) {
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor((seconds % 3600) / 60)
-    const s = seconds % 60
-    if (h > 0) return `${h}t ${m}m`
-    if (m > 0) return `${m}m ${s}s`
-    return `${s}s`
-  }
 
   function formatBytes(bytes: number) {
     if (bytes >= 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`
@@ -94,17 +114,27 @@ export function DashboardView() {
 
   return (
     <div style={s.page}>
+
+      {/* Shortcuts */}
+      <div style={s.shortcuts}>
+        {SHORTCUTS.map(({ label, sub, href }) => (
+          <Shortcut key={href} label={label} sub={sub} onClick={() => router.push(href)} />
+        ))}
+      </div>
+
+      {/* Service header */}
       <div style={s.header}>
         <h1 style={s.title}>Dashboard</h1>
         <p style={s.subtitle}>Overblik over services og forbrug</p>
       </div>
 
-      {loading && <p style={s.muted}>Henter statistik…</p>}
+      {loading && <p style={s.muted}>Henter statistik...</p>}
       {error && <p style={s.errorText}>{error}</p>}
 
       {!loading && stats && (
         <div style={s.grid}>
-          {/* ── MongoDB ── */}
+
+          {/* MongoDB */}
           <div style={s.card}>
             <div style={s.cardHeader}>
               <img src="/logos/MongoDB.svg" alt="MongoDB" style={s.logo} />
@@ -138,15 +168,14 @@ export function DashboardView() {
             </div>
           </div>
 
-          {/* ── Cloudinary ── */}
+          {/* Cloudinary */}
           <div style={s.card}>
             <div style={s.cardHeader}>
               <img src="/logos/Cloudinary.svg" alt="Cloudinary" style={s.logo} />
               <div>
                 <h2 style={s.cardTitle}>Cloudinary</h2>
                 <p style={s.cardPlan}>
-                  Cloud storage · {stats.cloudinary?.plan ?? 'Free'} ·{' '}
-                  {stats.cloudinary?.creditsLimit ?? 25} credits/md
+                  Cloud storage · {stats.cloudinary?.plan ?? 'Free'} · {stats.cloudinary?.creditsLimit ?? 25} credits/md
                 </p>
               </div>
             </div>
@@ -160,7 +189,7 @@ export function DashboardView() {
                   <ProgressBar
                     used={stats.cloudinary.creditsUsed}
                     limit={stats.cloudinary.creditsLimit}
-                    label="Credits (storage + båndbredde)"
+                    label="Credits (storage + bandbredde)"
                   />
                   <div style={s.divider} />
                   <div style={s.statRow}>
@@ -172,7 +201,7 @@ export function DashboardView() {
                     <span style={s.statValue}>{formatBytes(stats.cloudinary.storageBytes)}</span>
                   </div>
                   <div style={s.statRow}>
-                    <span style={s.statLabel}>Båndbredde brugt</span>
+                    <span style={s.statLabel}>Bandbredde brugt</span>
                     <span style={s.statValue}>{formatBytes(stats.cloudinary.bandwidthBytes)}</span>
                   </div>
                 </>
@@ -182,7 +211,7 @@ export function DashboardView() {
             </div>
           </div>
 
-          {/* ── Mux ── */}
+          {/* Mux */}
           <div style={s.card}>
             <div style={s.cardHeader}>
               <img src="/logos/MUX.svg" alt="MUX" style={s.logo} />
@@ -200,17 +229,6 @@ export function DashboardView() {
                   </div>
                   <ProgressBar used={stats.mux.totalVideos} limit={10} label="Videoer" />
                   <div style={s.divider} />
-                  {/* <div style={s.statRow}>
-                    <span style={s.statLabel}>Klar til afspilning</span>
-                    <span style={s.statValue}>{stats.mux.readyVideos}</span>
-                  </div>
-                  <div style={s.statRow}>
-                    <span style={s.statLabel}>Samlet varighed</span>
-                    <span style={s.statValue}>
-                      {formatDuration(stats.mux.totalDurationSeconds)}
-                    </span>
-                  </div> */}
-                  {/* <p style={s.note}>💡 Delivery minutes spores ikke på gratis plan</p> */}
                 </>
               ) : (
                 <p style={s.errorText}>Kunne ikke hente Mux data</p>
@@ -218,7 +236,7 @@ export function DashboardView() {
             </div>
           </div>
 
-          {/* ── Railway ── */}
+          {/* Railway */}
           <div style={s.card}>
             <div style={s.cardHeader}>
               <img src="/logos/Railway.svg" alt="Railway" style={s.logo} />
@@ -260,9 +278,7 @@ export function DashboardView() {
                   <p style={s.sectionLabel}>Estimated Usage</p>
                   <div style={s.statRow}>
                     <span style={s.statLabel}>Memory Usage</span>
-                    <span style={s.statValue}>
-                      ${stats.railway.estimated.memoryCost.toFixed(2)}
-                    </span>
+                    <span style={s.statValue}>${stats.railway.estimated.memoryCost.toFixed(2)}</span>
                   </div>
                   <div style={s.statRow}>
                     <span style={s.statLabel}>CPU Usage</span>
@@ -270,9 +286,7 @@ export function DashboardView() {
                   </div>
                   <div style={s.statRow}>
                     <span style={s.statLabel}>Network Usage</span>
-                    <span style={s.statValue}>
-                      ${stats.railway.estimated.networkCost.toFixed(2)}
-                    </span>
+                    <span style={s.statValue}>${stats.railway.estimated.networkCost.toFixed(2)}</span>
                   </div>
                   <div style={{ ...s.statRow, marginTop: '4px' }}>
                     <span style={{ ...s.statLabel, fontWeight: 600, color: 'var(--theme-text)' }}>
@@ -293,6 +307,7 @@ export function DashboardView() {
               )}
             </div>
           </div>
+
         </div>
       )}
     </div>
@@ -301,8 +316,45 @@ export function DashboardView() {
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: '32px', maxWidth: '1100px' },
-  header: { marginBottom: '28px' },
-  title: { fontSize: '26px', fontWeight: 700, margin: '0 0 4px', color: 'var(--theme-text)' },
+
+  shortcuts: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: '12px',
+    marginBottom: '36px',
+  },
+  shortcut: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '18px 20px',
+    border: '1px solid var(--theme-elevation-150)',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+  },
+  shortcutLeft: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '4px',
+  },
+  shortcutLabel: {
+    fontSize: '15px',
+    fontWeight: 600,
+    color: 'var(--theme-text)',
+    lineHeight: 1,
+  },
+  shortcutSub: {
+    fontSize: '12px',
+    color: 'var(--theme-elevation-500)',
+  },
+  shortcutArrow: {
+    fontSize: '18px',
+    color: 'var(--theme-elevation-400)',
+  },
+
+  header: { marginBottom: '20px' },
+  title: { fontSize: '18px', fontWeight: 600, margin: '0 0 4px', color: 'var(--theme-text)' },
   subtitle: { fontSize: '13px', color: 'var(--theme-elevation-500)', margin: 0 },
   muted: { fontSize: '14px', color: 'var(--theme-elevation-500)' },
   grid: {
@@ -323,7 +375,6 @@ const s: Record<string, React.CSSProperties> = {
     padding: '16px 20px',
     borderBottom: '1px solid var(--theme-elevation-100)',
   },
-  icon: { fontSize: '22px', flexShrink: 0 },
   cardTitle: {
     fontSize: '15px',
     fontWeight: 600,
@@ -358,7 +409,6 @@ const s: Record<string, React.CSSProperties> = {
   },
   progressFill: { height: '100%', borderRadius: '4px', transition: 'width 0.6s ease' },
   divider: { height: '1px', background: 'var(--theme-elevation-100)', margin: '2px 0' },
-  note: { fontSize: '11px', color: 'var(--theme-elevation-400)', margin: 0, fontStyle: 'italic' },
   errorText: { fontSize: '13px', color: '#ef4444', margin: 0 },
   logo: { width: '32px', height: '32px', objectFit: 'contain' as const, flexShrink: 0 },
 }
