@@ -24,7 +24,6 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     meta: {
-      favicon: '/tab_icon.svg',
       titleSuffix: '— Creative Barrow',
       icons: [
         {
