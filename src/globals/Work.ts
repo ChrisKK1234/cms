@@ -22,10 +22,12 @@ export const Work: GlobalConfig = {
       type: 'relationship',
       relationTo: 'projects',
       hasMany: true,
+      label: 'Featured projekter',
       admin: {
-        description: 'Vælg hvilke projekter der vises på work-siden',
+        components: {
+          Field: '@/components/fields/FeaturedProjectsField#FeaturedProjectsField',
+        },
       },
     },
-    // Components tilføjes her
   ],
 }

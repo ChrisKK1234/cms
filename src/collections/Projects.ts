@@ -1,4 +1,165 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Block } from 'payload'
+import {
+  lexicalEditor,
+  BoldFeature,
+  ItalicFeature,
+  HeadingFeature,
+  FixedToolbarFeature,
+} from '@payloadcms/richtext-lexical'
+
+const richTextEditor = lexicalEditor({
+  features: [
+    FixedToolbarFeature(),
+    BoldFeature(),
+    ItalicFeature(),
+    HeadingFeature({ enabledHeadingSizes: ['h3'] }),
+  ],
+})
+
+const ContextTextBlock: Block = {
+  slug: 'contextText',
+  labels: { singular: 'Context Text', plural: 'Context Text' },
+  fields: [
+    {
+      name: 'columns',
+      type: 'select',
+      label: 'Antal kolonner',
+      required: true,
+      defaultValue: '1',
+      options: [
+        { label: '1 kolonne', value: '1' },
+        { label: '2 kolonner', value: '2' },
+        { label: '3 kolonner', value: '3' },
+      ],
+    },
+    {
+      name: 'col1',
+      type: 'richText',
+      label: 'Kolonne 1',
+      editor: richTextEditor,
+    },
+    {
+      name: 'col2',
+      type: 'richText',
+      label: 'Kolonne 2',
+      editor: richTextEditor,
+      admin: {
+        condition: (_, siblingData) => ['2', '3'].includes(siblingData?.columns),
+      },
+    },
+    {
+      name: 'col3',
+      type: 'richText',
+      label: 'Kolonne 3',
+      editor: richTextEditor,
+      admin: {
+        condition: (_, siblingData) => siblingData?.columns === '3',
+      },
+    },
+  ],
+}
+
+// Simple media block – media eller mux via toggle
+const SimpleMediaBlock: Block = {
+  slug: 'simpleMedia',
+  labels: { singular: 'Medie', plural: 'Medier' },
+  fields: [
+    {
+      name: 'mediaType',
+      type: 'text',
+      label: 'Medie type',
+      admin: { hidden: true },
+    },
+    {
+      name: 'mediaMedia',
+      type: 'upload',
+      label: 'Billede',
+      relationTo: 'media',
+      admin: { hidden: true },
+    },
+    {
+      name: 'mediaMux',
+      type: 'relationship',
+      label: 'Video',
+      relationTo: 'mux-videos',
+      admin: { hidden: true },
+    },
+    {
+      name: 'mediaField',
+      type: 'ui',
+      label: 'Medie',
+      admin: {
+        components: {
+          Field: '@/components/fields/MediaOrMuxField#MediaOrMuxField',
+        },
+      },
+    },
+  ],
+}
+
+const MultipleImagesBlock: Block = {
+  slug: 'multipleImages',
+  labels: { singular: 'Flere billeder', plural: 'Flere billeder' },
+  fields: [
+    {
+      name: 'images',
+      type: 'array',
+      label: 'Billeder',
+      minRows: 2,
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          label: 'Billede',
+          relationTo: 'media',
+          required: true,
+        },
+      ],
+    },
+  ],
+}
+
+const CreditsBlock: Block = {
+  slug: 'credits',
+  labels: { singular: 'Credits', plural: 'Credits' },
+  fields: [
+    {
+      name: 'recognitions',
+      type: 'array',
+      label: 'Recognitions',
+      admin: {
+        description: 'Listepunkter i plain text',
+      },
+      fields: [
+        {
+          name: 'text',
+          type: 'text',
+          label: 'Tekst',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'creditsList',
+      type: 'array',
+      label: 'Credits',
+      fields: [
+        {
+          name: 'role',
+          type: 'text',
+          label: 'Rolle',
+          required: true,
+        },
+        {
+          name: 'name',
+          type: 'text',
+          label: 'Navn',
+          required: true,
+        },
+      ],
+    },
+  ],
+}
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -22,11 +183,59 @@ export const Projects: CollectionConfig = {
     read: () => true,
   },
   fields: [
+    // ── Meta ──
     {
       name: 'title',
       type: 'text',
+      label: 'Titel',
       required: true,
     },
-    // Components tilføjes her
+    {
+      name: 'thumbnail',
+      type: 'upload',
+      label: 'Thumbnail',
+      relationTo: 'media',
+      required: true,
+    },
+
+    // ── Background media – media eller mux ──
+    {
+      name: 'backgroundType',
+      type: 'text',
+      label: 'Background media',
+      required: true,
+      admin: {
+        components: {
+          Field: '@/components/fields/BackgroundMediaField#BackgroundMediaField',
+        },
+      },
+    },
+    {
+      name: 'backgroundMedia',
+      type: 'upload',
+      label: 'Background billede',
+      relationTo: 'media',
+      admin: { hidden: true },
+    },
+    {
+      name: 'backgroundMux',
+      type: 'relationship',
+      label: 'Background video',
+      relationTo: 'mux-videos',
+      admin: { hidden: true },
+    },
+
+    // ── Field bank ──
+    {
+      name: 'fields',
+      type: 'blocks',
+      label: 'Indhold',
+      blocks: [
+        ContextTextBlock,
+        SimpleMediaBlock,
+        MultipleImagesBlock,
+        CreditsBlock,
+      ],
+    },
   ],
 }

@@ -239,16 +239,105 @@ export interface Media {
 export interface Project {
   id: string;
   title: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "profiles".
- */
-export interface Profile {
-  id: string;
-  name: string;
+  thumbnail: string | Media;
+  backgroundType: string;
+  backgroundMedia?: (string | null) | Media;
+  backgroundMux?: (string | null) | MuxVideo;
+  fields?:
+    | (
+        | {
+            columns: '1' | '2' | '3';
+            col1?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            col2?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            col3?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contextText';
+          }
+        | {
+            mediaType?: string | null;
+            mediaMedia?: (string | null) | Media;
+            mediaMux?: (string | null) | MuxVideo;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'simpleMedia';
+          }
+        | {
+            images?:
+              | {
+                  image: string | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'multipleImages';
+          }
+        | {
+            /**
+             * Listepunkter i plain text
+             */
+            recognitions?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            creditsList?:
+              | {
+                  role: string;
+                  name: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'credits';
+          }
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -267,6 +356,40 @@ export interface MuxVideo {
   aspectRatio?: string | null;
   thumbnailUrl?: string | null;
   title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profiles".
+ */
+export interface Profile {
+  id: string;
+  name: string;
+  /**
+   * Vælg en farve til profilen
+   */
+  color?: string | null;
+  title?: string | null;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  profileImage?: (string | null) | Media;
+  heroType?: string | null;
+  heroMedia?: (string | null) | Media;
+  heroMux?: (string | null) | MuxVideo;
   updatedAt: string;
   createdAt: string;
 }
@@ -420,6 +543,64 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  thumbnail?: T;
+  backgroundType?: T;
+  backgroundMedia?: T;
+  backgroundMux?: T;
+  fields?:
+    | T
+    | {
+        contextText?:
+          | T
+          | {
+              columns?: T;
+              col1?: T;
+              col2?: T;
+              col3?: T;
+              id?: T;
+              blockName?: T;
+            };
+        simpleMedia?:
+          | T
+          | {
+              mediaType?: T;
+              mediaMedia?: T;
+              mediaMux?: T;
+              id?: T;
+              blockName?: T;
+            };
+        multipleImages?:
+          | T
+          | {
+              images?:
+                | T
+                | {
+                    image?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        credits?:
+          | T
+          | {
+              recognitions?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              creditsList?:
+                | T
+                | {
+                    role?: T;
+                    name?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -429,6 +610,13 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface ProfilesSelect<T extends boolean = true> {
   name?: T;
+  color?: T;
+  title?: T;
+  bio?: T;
+  profileImage?: T;
+  heroType?: T;
+  heroMedia?: T;
+  heroMux?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -493,9 +681,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Work {
   id: string;
-  /**
-   * Vælg hvilke projekter der vises på work-siden
-   */
   featuredProjects?: (string | Project)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
