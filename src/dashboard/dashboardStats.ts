@@ -93,95 +93,95 @@ export const dashboardStatsEndpoint = ({ muxOptions }: DashboardOptions): Endpoi
       stats.mongodb = null
     }
 
-    try {
-      const railwayToken = process.env.RAILWAY_API_TOKEN
-      const railwayProjectId = process.env.RAILWAY_PROJECT_ID
+    // try {
+    //   const railwayToken = process.env.RAILWAY_API_TOKEN
+    //   const railwayProjectId = process.env.RAILWAY_PROJECT_ID
 
-      if (!railwayToken || !railwayProjectId) {
-        stats.railway = { error: 'Mangler Railway credentials i .env' }
-      } else {
-        const now = new Date()
-        const startDate = new Date(now.getTime() - 10 * 60 * 1000).toISOString()
+    //   if (!railwayToken || !railwayProjectId) {
+    //     stats.railway = { error: 'Mangler Railway credentials i .env' }
+    //   } else {
+    //     const now = new Date()
+    //     const startDate = new Date(now.getTime() - 10 * 60 * 1000).toISOString()
 
-        const metricsQuery = `{
-          metrics(
-            projectId: "${railwayProjectId}",
-            measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB],
-            startDate: "${startDate}",
-            sampleRateSeconds: 60,
-            averagingWindowSeconds: 300
-          ) { measurement values { value } }
-          usage(
-            projectId: "${railwayProjectId}",
-            measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB]
-          ) { measurement value }
-          estimatedUsage(
-            projectId: "${railwayProjectId}",
-            measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB]
-          ) { measurement estimatedValue }
-        }`
+    //     const metricsQuery = `{
+    //       metrics(
+    //         projectId: "${railwayProjectId}",
+    //         measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB],
+    //         startDate: "${startDate}",
+    //         sampleRateSeconds: 60,
+    //         averagingWindowSeconds: 300
+    //       ) { measurement values { value } }
+    //       usage(
+    //         projectId: "${railwayProjectId}",
+    //         measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB]
+    //       ) { measurement value }
+    //       estimatedUsage(
+    //         projectId: "${railwayProjectId}",
+    //         measurements: [MEMORY_USAGE_GB, CPU_USAGE, NETWORK_RX_GB, NETWORK_TX_GB]
+    //       ) { measurement estimatedValue }
+    //     }`
 
-        const res = await fetch('https://backboard.railway.app/graphql/v2', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${railwayToken}`,
-          },
-          body: JSON.stringify({ query: metricsQuery }),
-        })
+    //     const res = await fetch('https://backboard.railway.app/graphql/v2', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         Authorization: `Bearer ${railwayToken}`,
+    //       },
+    //       body: JSON.stringify({ query: metricsQuery }),
+    //     })
 
-        const data = (await res.json()) as {
-          data: {
-            metrics: Array<{ measurement: string; values: Array<{ value: number }> }>
-            usage: Array<{ measurement: string; value: number }>
-            estimatedUsage: Array<{ measurement: string; estimatedValue: number }>
-          }
-        }
+    //     const data = (await res.json()) as {
+    //       data: {
+    //         metrics: Array<{ measurement: string; values: Array<{ value: number }> }>
+    //         usage: Array<{ measurement: string; value: number }>
+    //         estimatedUsage: Array<{ measurement: string; estimatedValue: number }>
+    //       }
+    //     }
 
-        const getLatest = (key: string) => {
-          const series = data.data.metrics.find((m) => m.measurement === key)
-          const values = series?.values ?? []
-          return values[values.length - 1]?.value ?? 0
-        }
+    //     const getLatest = (key: string) => {
+    //       const series = data.data.metrics.find((m) => m.measurement === key)
+    //       const values = series?.values ?? []
+    //       return values[values.length - 1]?.value ?? 0
+    //     }
 
-        const getUsage = (key: string) =>
-          data.data.usage.find((u) => u.measurement === key)?.value ?? 0
+    //     const getUsage = (key: string) =>
+    //       data.data.usage.find((u) => u.measurement === key)?.value ?? 0
 
-        const getEstimated = (key: string) =>
-          data.data.estimatedUsage.find((u) => u.measurement === key)?.estimatedValue ?? 0
+    //     const getEstimated = (key: string) =>
+    //       data.data.estimatedUsage.find((u) => u.measurement === key)?.estimatedValue ?? 0
 
-        const currentMemoryCost = getUsage('MEMORY_USAGE_GB') * RAILWAY_PRICES.memoryPerGBMin
-        const currentCPUCost = getUsage('CPU_USAGE') * RAILWAY_PRICES.cpuPerVCPUMin
-        const currentNetworkCost =
-          (getUsage('NETWORK_TX_GB') + getUsage('NETWORK_RX_GB')) * RAILWAY_PRICES.networkPerGB
-        const estimatedMemoryCost = getEstimated('MEMORY_USAGE_GB') * RAILWAY_PRICES.memoryPerGBMin
-        const estimatedCPUCost = getEstimated('CPU_USAGE') * RAILWAY_PRICES.cpuPerVCPUMin
-        const estimatedNetworkCost =
-          (getEstimated('NETWORK_TX_GB') + getEstimated('NETWORK_RX_GB')) *
-          RAILWAY_PRICES.networkPerGB
+    //     const currentMemoryCost = getUsage('MEMORY_USAGE_GB') * RAILWAY_PRICES.memoryPerGBMin
+    //     const currentCPUCost = getUsage('CPU_USAGE') * RAILWAY_PRICES.cpuPerVCPUMin
+    //     const currentNetworkCost =
+    //       (getUsage('NETWORK_TX_GB') + getUsage('NETWORK_RX_GB')) * RAILWAY_PRICES.networkPerGB
+    //     const estimatedMemoryCost = getEstimated('MEMORY_USAGE_GB') * RAILWAY_PRICES.memoryPerGBMin
+    //     const estimatedCPUCost = getEstimated('CPU_USAGE') * RAILWAY_PRICES.cpuPerVCPUMin
+    //     const estimatedNetworkCost =
+    //       (getEstimated('NETWORK_TX_GB') + getEstimated('NETWORK_RX_GB')) *
+    //       RAILWAY_PRICES.networkPerGB
 
-        stats.railway = {
-          creditCap: parseFloat(process.env.RAILWAY_CREDIT_CAP ?? '5'),
-          current: {
-            memoryGB: getLatest('MEMORY_USAGE_GB'),
-            cpu: getLatest('CPU_USAGE'),
-            memoryCost: currentMemoryCost,
-            cpuCost: currentCPUCost,
-            networkCost: currentNetworkCost,
-            totalCost: currentMemoryCost + currentCPUCost + currentNetworkCost,
-          },
-          estimated: {
-            memoryCost: estimatedMemoryCost,
-            cpuCost: estimatedCPUCost,
-            networkCost: estimatedNetworkCost,
-            totalCost: estimatedMemoryCost + estimatedCPUCost + estimatedNetworkCost,
-          },
-        }
-      }
-    } catch (err) {
-      console.error('[Dashboard] Railway fejlede:', err)
-      stats.railway = null
-    }
+    //     stats.railway = {
+    //       creditCap: parseFloat(process.env.RAILWAY_CREDIT_CAP ?? '5'),
+    //       current: {
+    //         memoryGB: getLatest('MEMORY_USAGE_GB'),
+    //         cpu: getLatest('CPU_USAGE'),
+    //         memoryCost: currentMemoryCost,
+    //         cpuCost: currentCPUCost,
+    //         networkCost: currentNetworkCost,
+    //         totalCost: currentMemoryCost + currentCPUCost + currentNetworkCost,
+    //       },
+    //       estimated: {
+    //         memoryCost: estimatedMemoryCost,
+    //         cpuCost: estimatedCPUCost,
+    //         networkCost: estimatedNetworkCost,
+    //         totalCost: estimatedMemoryCost + estimatedCPUCost + estimatedNetworkCost,
+    //       },
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.error('[Dashboard] Railway fejlede:', err)
+    //   stats.railway = null
+    // }
 
     return Response.json(stats)
   },
