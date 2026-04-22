@@ -11,6 +11,9 @@ let isSyncing = false
 
 export const MuxVideosCollection = ({ slug, options }: Options): CollectionConfig => ({
   slug,
+  access: {
+    read: () => true,
+  },
   labels: {
     singular: 'Mux Video',
     plural: 'Mux Videos',
