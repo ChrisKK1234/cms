@@ -19,12 +19,12 @@ type MuxDoc = {
 
 type Props = { path: string }
 
-export function BackgroundMediaField({ path }: Props) {
+export function SimpleMediaField({ path }: Props) {
   const { value: type, setValue: setType } = useField<string>({ path })
-  const base = path.replace('backgroundType', '')
-  const mediaPath = `${base}backgroundMedia`
-  const muxPath = `${base}backgroundMux`
-  const mutedPath = `${base}backgroundMuted`
+  const base = path.replace('mediaType', '')
+  const mediaPath = `${base}mediaMedia`
+  const muxPath = `${base}mediaMux`
+  const mutedPath = `${base}mediaMuted`
 
   const { value: mediaValue, setValue: setMediaValue } = useField<string>({ path: mediaPath })
   const { value: muxValue, setValue: setMuxValue } = useField<string>({ path: muxPath })
@@ -71,8 +71,8 @@ export function BackgroundMediaField({ path }: Props) {
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 10 }}>
-        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--theme-text)' }}>Background media</label>
-        <span style={{ color: '#ef4444', fontSize: 13 }}>*</span>
+        <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--theme-text)' }}>Medie</label>
+        
       </div>
 
       <div style={{ display: 'inline-flex', border: '1px solid var(--theme-elevation-150)', borderRadius: 6, overflow: 'hidden', marginBottom: 14 }}>

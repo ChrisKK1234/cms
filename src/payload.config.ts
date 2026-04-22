@@ -11,6 +11,7 @@ import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Profiles } from './collections/Profiles'
 import { Work } from './globals/Work'
+import { Nav } from './globals/Nav'
 import { muxPlugin } from './mux'
 import { dashboardStatsEndpoint } from './dashboard/dashboardStats'
 
@@ -24,7 +25,6 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     meta: {
-      titleSuffix: '— Creative Barrow',
       icons: [
         {
           url: '/tab_icon.svg',
@@ -43,11 +43,10 @@ export default buildConfig({
           path: '/content',
         },
       },
-      header: ['@/components/EmptyHeader#EmptyHeader'],
     },
   },
   collections: [Users, Media, Projects, Profiles],
-  globals: [Work],
+  globals: [Work, Nav],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

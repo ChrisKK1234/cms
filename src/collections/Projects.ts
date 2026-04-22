@@ -59,7 +59,6 @@ const ContextTextBlock: Block = {
   ],
 }
 
-// Simple media block – media eller mux via toggle
 const SimpleMediaBlock: Block = {
   slug: 'simpleMedia',
   labels: { singular: 'Medie', plural: 'Medier' },
@@ -67,8 +66,13 @@ const SimpleMediaBlock: Block = {
     {
       name: 'mediaType',
       type: 'text',
-      label: 'Medie type',
-      admin: { hidden: true },
+      label: 'Medie',
+      defaultValue: 'media',
+      admin: {
+        components: {
+          Field: '@/components/fields/SimpleMediaField#SimpleMediaField',
+        },
+      },
     },
     {
       name: 'mediaMedia',
@@ -85,14 +89,11 @@ const SimpleMediaBlock: Block = {
       admin: { hidden: true },
     },
     {
-      name: 'mediaField',
-      type: 'ui',
-      label: 'Medie',
-      admin: {
-        components: {
-          Field: '@/components/fields/MediaOrMuxField#MediaOrMuxField',
-        },
-      },
+      name: 'mediaMuted',
+      type: 'checkbox',
+      label: 'Video muted',
+      defaultValue: true,
+      admin: { hidden: true },
     },
   ],
 }
@@ -127,9 +128,7 @@ const CreditsBlock: Block = {
       name: 'recognitions',
       type: 'array',
       label: 'Recognitions',
-      admin: {
-        description: 'Listepunkter i plain text',
-      },
+      admin: { description: 'Listepunkter i plain text' },
       fields: [
         {
           name: 'text',
@@ -165,7 +164,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'updatedAt'],
+    defaultColumns: ['title', 'slug', 'updatedAt'],
     components: {
       views: {
         list: {
@@ -182,6 +181,20 @@ export const Projects: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    beforeChange: [
+      ({ data }) => {
+        if (data.title && !data.slug) {
+          data.slug = data.title
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9-]/g, '')
+        }
+        return data
+      },
+    ],
+  },
   fields: [
     // ── Meta ──
     {
@@ -191,6 +204,15 @@ export const Projects: CollectionConfig = {
       required: true,
     },
     {
+      name: 'slug',
+      type: 'text',
+      label: 'Slug',
+      unique: true,
+      admin: {
+        description: 'Auto-genereret fra titel. URL: /projects/[slug]',
+      },
+    },
+    {
       name: 'thumbnail',
       type: 'upload',
       label: 'Thumbnail',
@@ -198,11 +220,12 @@ export const Projects: CollectionConfig = {
       required: true,
     },
 
-    // ── Background media – media eller mux ──
+    // ── Background media ──
     {
       name: 'backgroundType',
       type: 'text',
       label: 'Background media',
+      defaultValue: 'media',
       required: true,
       admin: {
         components: {
@@ -222,6 +245,13 @@ export const Projects: CollectionConfig = {
       type: 'relationship',
       label: 'Background video',
       relationTo: 'mux-videos',
+      admin: { hidden: true },
+    },
+    {
+      name: 'backgroundMuted',
+      type: 'checkbox',
+      label: 'Background video muted',
+      defaultValue: true,
       admin: { hidden: true },
     },
 

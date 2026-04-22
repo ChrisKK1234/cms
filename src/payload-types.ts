@@ -95,9 +95,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     work: Work;
+    nav: Nav;
   };
   globalsSelect: {
     work: WorkSelect<false> | WorkSelect<true>;
+    nav: NavSelect<false> | NavSelect<true>;
   };
   locale: null;
   widgets: {
@@ -239,6 +241,10 @@ export interface Media {
 export interface Project {
   id: string;
   title: string;
+  /**
+   * Auto-genereret fra titel. URL: /projects/[slug]
+   */
+  slug?: string | null;
   thumbnail: string | Media;
   backgroundType: string;
   backgroundMedia?: (string | null) | Media;
@@ -366,6 +372,10 @@ export interface MuxVideo {
 export interface Profile {
   id: string;
   name: string;
+  /**
+   * Auto-genereret fra navn. URL: /profiles/[slug]
+   */
+  slug?: string | null;
   /**
    * Vælg en farve til profilen
    */
@@ -543,6 +553,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   thumbnail?: T;
   backgroundType?: T;
   backgroundMedia?: T;
@@ -610,6 +621,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  */
 export interface ProfilesSelect<T extends boolean = true> {
   name?: T;
+  slug?: T;
   color?: T;
   title?: T;
   bio?: T;
@@ -681,7 +693,46 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Work {
   id: string;
+  name: string;
+  /**
+   * Farve til Future Boss profil-kortet på forsiden
+   */
+  color?: string | null;
+  profileOrder?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   featuredProjects?: (string | Project)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav".
+ */
+export interface Nav {
+  id: string;
+  contact?:
+    | {
+        /**
+         * Fx "Email", "Telefon", "Instagram"
+         */
+        label: string;
+        type: 'link' | 'email' | 'phone';
+        /**
+         * URL, email-adresse eller telefonnummer
+         */
+        value: string;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'contactItem';
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -690,7 +741,32 @@ export interface Work {
  * via the `definition` "work_select".
  */
 export interface WorkSelect<T extends boolean = true> {
+  name?: T;
+  color?: T;
+  profileOrder?: T;
   featuredProjects?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "nav_select".
+ */
+export interface NavSelect<T extends boolean = true> {
+  contact?:
+    | T
+    | {
+        contactItem?:
+          | T
+          | {
+              label?: T;
+              type?: T;
+              value?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
