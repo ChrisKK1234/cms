@@ -73,6 +73,11 @@ export default buildConfig({
       folder: 'portfolio',
     }),
   ],
+  cors: [
+    'http://localhost:5173',
+    'https://chrisogoscar.netlify.app',
+    'https://andtheoscargoestochris.com',
+  ],
   endpoints: [
     dashboardStatsEndpoint({
       muxOptions: {

@@ -249,6 +249,7 @@ export interface Project {
   backgroundType: string;
   backgroundMedia?: (string | null) | Media;
   backgroundMux?: (string | null) | MuxVideo;
+  backgroundMuted?: boolean | null;
   fields?:
     | (
         | {
@@ -306,6 +307,7 @@ export interface Project {
             mediaType?: string | null;
             mediaMedia?: (string | null) | Media;
             mediaMux?: (string | null) | MuxVideo;
+            mediaMuted?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'simpleMedia';
@@ -400,6 +402,7 @@ export interface Profile {
   heroType?: string | null;
   heroMedia?: (string | null) | Media;
   heroMux?: (string | null) | MuxVideo;
+  heroMuted?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -558,6 +561,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   backgroundType?: T;
   backgroundMedia?: T;
   backgroundMux?: T;
+  backgroundMuted?: T;
   fields?:
     | T
     | {
@@ -577,6 +581,7 @@ export interface ProjectsSelect<T extends boolean = true> {
               mediaType?: T;
               mediaMedia?: T;
               mediaMux?: T;
+              mediaMuted?: T;
               id?: T;
               blockName?: T;
             };
@@ -629,6 +634,7 @@ export interface ProfilesSelect<T extends boolean = true> {
   heroType?: T;
   heroMedia?: T;
   heroMux?: T;
+  heroMuted?: T;
   updatedAt?: T;
   createdAt?: T;
 }
