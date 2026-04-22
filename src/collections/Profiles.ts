@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { triggerNetlifyRebuild } from '@/lib/netlifyRebuild'
 import {
   lexicalEditor,
   BoldFeature,
@@ -42,6 +43,7 @@ export const Profiles: CollectionConfig = {
       },
     ],
     afterChange: [
+      async () => { await triggerNetlifyRebuild() },
       async ({ doc, operation, req }) => {
         if (operation !== 'create') return doc
         try {
@@ -70,6 +72,9 @@ export const Profiles: CollectionConfig = {
         }
         return doc
       },
+    ],
+    afterDelete: [
+      async () => { await triggerNetlifyRebuild() },
     ],
   },
   fields: [

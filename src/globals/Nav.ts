@@ -1,4 +1,5 @@
 import type { GlobalConfig, Block } from 'payload'
+import { triggerNetlifyRebuild } from '@/lib/netlifyRebuild'
 
 const ContactItemBlock: Block = {
   slug: 'contactItem',
@@ -53,6 +54,11 @@ export const Nav: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [
+      async () => { await triggerNetlifyRebuild() },
+    ],
   },
   fields: [
     {

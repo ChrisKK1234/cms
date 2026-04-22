@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { triggerNetlifyRebuild } from '@/lib/netlifyRebuild'
 
 export const Work: GlobalConfig = {
   slug: 'work',
@@ -16,6 +17,11 @@ export const Work: GlobalConfig = {
   },
   access: {
     read: () => true,
+  },
+  hooks: {
+    afterChange: [
+      async () => { await triggerNetlifyRebuild() },
+    ],
   },
   fields: [
     // ── Future Boss identity ──

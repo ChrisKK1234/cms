@@ -1,4 +1,5 @@
 import type { CollectionConfig, Block } from 'payload'
+import { triggerNetlifyRebuild } from '@/lib/netlifyRebuild'
 import {
   lexicalEditor,
   BoldFeature,
@@ -193,6 +194,12 @@ export const Projects: CollectionConfig = {
         }
         return data
       },
+    ],
+    afterChange: [
+      async () => { await triggerNetlifyRebuild() },
+    ],
+    afterDelete: [
+      async () => { await triggerNetlifyRebuild() },
     ],
   },
   fields: [
