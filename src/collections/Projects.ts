@@ -211,6 +211,17 @@ export const Projects: CollectionConfig = {
       required: true,
     },
     {
+      name: 'awards',
+      type: 'json',
+      label: 'Awards',
+      admin: {
+        description: 'Vælg hvilke awards dette projekt har fået',
+        components: {
+          Field: '@/components/fields/AwardsPickerField#AwardsPickerField',
+        },
+      },
+    },
+    {
       name: 'slug',
       type: 'text',
       label: 'Slug',

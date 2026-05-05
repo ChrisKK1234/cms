@@ -12,6 +12,8 @@ import { Projects } from './collections/Projects'
 import { Profiles } from './collections/Profiles'
 import { Work } from './globals/Work'
 import { Nav } from './globals/Nav'
+import { Contact } from './globals/Contact'
+import { Awards } from './globals/Awards'
 import { muxPlugin } from './mux'
 import { dashboardStatsEndpoint } from './dashboard/dashboardStats'
 
@@ -46,7 +48,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Projects, Profiles],
-  globals: [Work, Nav],
+  globals: [Work, Nav, Contact, Awards],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

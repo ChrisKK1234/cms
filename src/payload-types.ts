@@ -96,10 +96,14 @@ export interface Config {
   globals: {
     work: Work;
     nav: Nav;
+    contact: Contact;
+    awards: Award;
   };
   globalsSelect: {
     work: WorkSelect<false> | WorkSelect<true>;
     nav: NavSelect<false> | NavSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+    awards: AwardsSelect<false> | AwardsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -241,6 +245,18 @@ export interface Media {
 export interface Project {
   id: string;
   title: string;
+  /**
+   * Vælg hvilke awards dette projekt har fået
+   */
+  awards?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   /**
    * Auto-genereret fra titel. URL: /projects/[slug]
    */
@@ -556,6 +572,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
+  awards?: T;
   slug?: T;
   thumbnail?: T;
   backgroundType?: T;
@@ -744,6 +761,47 @@ export interface Nav {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: string;
+  chris?: {
+    linkedin?: string | null;
+    instagram?: string | null;
+    email?: string | null;
+  };
+  oscar?: {
+    linkedin?: string | null;
+    instagram?: string | null;
+    email?: string | null;
+  };
+  recognitions?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "awards".
+ */
+export interface Award {
+  id: string;
+  types?:
+    | {
+        name: string;
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "work_select".
  */
 export interface WorkSelect<T extends boolean = true> {
@@ -772,6 +830,51 @@ export interface NavSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  chris?:
+    | T
+    | {
+        linkedin?: T;
+        instagram?: T;
+        email?: T;
+      };
+  oscar?:
+    | T
+    | {
+        linkedin?: T;
+        instagram?: T;
+        email?: T;
+      };
+  recognitions?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "awards_select".
+ */
+export interface AwardsSelect<T extends boolean = true> {
+  types?:
+    | T
+    | {
+        name?: T;
+        image?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

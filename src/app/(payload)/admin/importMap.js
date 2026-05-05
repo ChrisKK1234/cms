@@ -1,5 +1,6 @@
 import { MediaEditView as MediaEditView_df3ef0ef470943d746c9ba2b0086c0bc } from '@/views/media/MediaEditView'
 import { MediaListView as MediaListView_854429258c2cfc066125112d357386ee } from '@/views/media/MediaListView'
+import { AwardsPickerField as AwardsPickerField_34167a5d183e0ab42fda0719f4752bf2 } from '@/components/fields/AwardsPickerField'
 import { BackgroundMediaField as BackgroundMediaField_588e541024d75ae13fa102519f9d0517 } from '@/components/fields/BackgroundMediaField'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -25,6 +26,8 @@ import { MuxVideosListView as MuxVideosListView_49ca8f4f7891d2f08d73c2c61efb3874
 import { FeaturedProjectsField as FeaturedProjectsField_a244d95b7e3fb6e88f5e6ce616b885ba } from '@/components/fields/FeaturedProjectsField'
 import { WorkEditView as WorkEditView_a47be0f755aa361e46f341d1160bfe7b } from '@/views/work/WorkEditView'
 import { NavEditView as NavEditView_31ea8114955eea4abe29a8df13d9d7e5 } from '@/views/nav/NavEditView'
+import { ContactEditView as ContactEditView_3807eb0274eabba833aabd60a012804c } from '@/views/contact/ContactEditView'
+import { AwardsEditView as AwardsEditView_909556af287111c1657e762e6dfcce13 } from '@/views/awards/AwardsEditView'
 import { DashboardView as DashboardView_7010f5cd38ddc45803d5cf95fe528667 } from '@/dashboard/DashboardView'
 import { ContentDashboard as ContentDashboard_5fa933d2947527eb56be836fe57fc846 } from '@/dashboard/ContentDashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -33,6 +36,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 export const importMap = {
   "@/views/media/MediaEditView#MediaEditView": MediaEditView_df3ef0ef470943d746c9ba2b0086c0bc,
   "@/views/media/MediaListView#MediaListView": MediaListView_854429258c2cfc066125112d357386ee,
+  "@/components/fields/AwardsPickerField#AwardsPickerField": AwardsPickerField_34167a5d183e0ab42fda0719f4752bf2,
   "@/components/fields/BackgroundMediaField#BackgroundMediaField": BackgroundMediaField_588e541024d75ae13fa102519f9d0517,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -58,6 +62,8 @@ export const importMap = {
   "@/components/fields/FeaturedProjectsField#FeaturedProjectsField": FeaturedProjectsField_a244d95b7e3fb6e88f5e6ce616b885ba,
   "@/views/work/WorkEditView#WorkEditView": WorkEditView_a47be0f755aa361e46f341d1160bfe7b,
   "@/views/nav/NavEditView#NavEditView": NavEditView_31ea8114955eea4abe29a8df13d9d7e5,
+  "@/views/contact/ContactEditView#ContactEditView": ContactEditView_3807eb0274eabba833aabd60a012804c,
+  "@/views/awards/AwardsEditView#AwardsEditView": AwardsEditView_909556af287111c1657e762e6dfcce13,
   "@/dashboard/DashboardView#DashboardView": DashboardView_7010f5cd38ddc45803d5cf95fe528667,
   "@/dashboard/ContentDashboard#ContentDashboard": ContentDashboard_5fa933d2947527eb56be836fe57fc846,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
