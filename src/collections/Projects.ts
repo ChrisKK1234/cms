@@ -199,7 +199,25 @@ export const Projects: CollectionConfig = {
       async () => { await triggerNetlifyRebuild() },
     ],
     afterDelete: [
-      async () => { await triggerNetlifyRebuild() },
+      async ({ doc, req }) => {
+        const workGlobal = await req.payload.findGlobal({ slug: 'work' })
+        const featuredProjects = workGlobal.featuredProjects ?? []
+
+        const cleaned = featuredProjects.filter((p: any) => {
+          const id = typeof p === 'string' ? p : p?.id
+          return id !== doc.id
+        })
+
+        if (cleaned.length !== featuredProjects.length) {
+          await req.payload.updateGlobal({
+            slug: 'work',
+            data: { featuredProjects: cleaned },
+            req,
+          })
+        }
+
+        await triggerNetlifyRebuild()
+      },
     ],
   },
   fields: [
