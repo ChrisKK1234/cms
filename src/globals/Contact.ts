@@ -21,6 +21,12 @@ export const Contact: GlobalConfig = {
   },
   fields: [
     {
+      name: 'title',
+      type: 'text',
+      label: 'Titel',
+      defaultValue: 'Subscribe for more ads',
+    },
+    {
       name: 'chris',
       type: 'group',
       label: 'Chris',
